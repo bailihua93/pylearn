@@ -1,5 +1,14 @@
 
 
+### 安装sudo
+```shell
+su
+apt-get install sudo
+vim /etc/sudoers
+
+添加 
+"你的用户名" ALL = (ALL)ALL
+```
 
 
 
@@ -31,7 +40,20 @@ sudo mysql -uroot -p 修改用户密码
 
 :q
 
-+ mongo
+#### mongo
+1.官网找到下载地址 https://www.mongodb.com/download-center?jmp=nav#community
+2. 切换到要下载的目录，比如/etc:
+cd /etc
+
+3. curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.3.tgz 下载  
+或则  sudo wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel62-3.2.10.tgz
+
+
+tar zxvf mongodb-linux-x86_64-3.6.3.tgz
+4. mv  mongo  /opt
+
+
+<!-- 广东 长江  风 -->
 
 sud口 apt-key
 开发环境 配直
@@ -61,8 +83,8 @@ bind_ip = 0.0.0.0
 
 
 
-noauth = true
-auth = true
+; noauth = true  会导致不能直连
+; auth = true
 ```
 
 
