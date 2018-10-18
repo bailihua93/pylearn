@@ -1,3 +1,8 @@
+
+
+
+
+
 ### 基础环境配置
 
 
@@ -100,6 +105,130 @@ uri的另一个子集 urn 命名资源的名称
 
 
 ## 基本库的使用  
+
+
+
+###urllib
+#### urllib.request.Request
+urllib.request.Request(url, data=None, headers={}, origin_req_host=None, unverifiable=False, method=None)
++ url
++ data 必须传字节流  bytes(urllib.parse.urlencode({})) 
++ headers  字典，可以直接构造，也可以调用  实例的 add_header()
++ origin_req_host 请求方的host名称或者ip地址
++ unverifiable 请求无法验证，默认False； 例如：请求图片的时候，没有权限，这时unverifiable值为true
++ method   'GET' 'POST' 'PUT'
+```python
+#urllib.request.Request(url, data=None, headers={}, origin_req_host=None, unverifiable=False, method=None)
+# coding:utf-8
+import urllib.request
+import urllib.parse
+
+url = 'http://httpbin.org/post'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
+    'Host': 'httpbin.org'
+}
+dict = {
+    'name': 'Germey'
+}
+data = bytes(urllib.parse.urlencode(dict), encoding='utf-8')
+request = urllib.request.Request(url=url, data=data, headers=headers, method="POST")
+response = urllib.request.urlopen(request)
+print(response.read().decode('utf-8'))
+
+```
+
+
+
+#### urllib.parse
+
+
+1. urllib.parse.urlparse(url,scheme,allow_fragments)
+* scheme://netloc/path ;params?query#fragment
+
++ url
++ scheme 如果url中没有scheme 则将设置的设置为默认值  urlparse(url,scheme='http')
++ allow_fragment  False fragment部分会被忽略，被解析为 path 
+
+
++ 结果  result[index]  result['name'] 是一个元组，可以用索引来获取也可以用属性名获取
+```python
+from urllib.parse import urlparse
+result = urlparse('http://www.baidu.com/index.html;user?id=5#comment')
+# ParseResult(scheme='http', netloc='www.baidu.com', path='/index.html', params='user', query='id=5', fragment='comment')
+
+print(urlparse('http://www.baidu.com/index.html;user?id=5#comment', allow_fragments=True))
+#ParseResult(scheme='http', netloc='www.baidu.com', path='/index.html', params='user', query='id=5', fragment='comment')
+print(urlparse('http://www.baidu.com/index.html;user?id=5#comment', allow_fragments=False))
+# ParseResult(scheme='http', netloc='www.baidu.com', path='/index.html', params='user', query='id=5#comment', fragment='')
+```
+
+
+2. urlunparse([scheme,netloc,path,param,query,comment]) 长度必须是7
+3. urlsplit()
+返回的param添加在了path中  
+通过index或者属性访问
+urlunsplit() 出入的数组长度必须是5
+
+4. urljoin(base,url,allow_fragment)
+base一url 提供了三项内容 scheme 、 netloc 和 path 。 如果这 3 项在新的链接里不存在，就予以补充；如果新的链接存在，就使用新的链接的部分。
+ 而 base_url 中的 pa rams 、 query 和 fragment是不起作用的 。
+
+```python
+from urllib.parse import urljoin
+print(urljoin('www.baidu.com', '?name=100', allow_fragments=True))
+
+```
+
+5. urlencode()  将字典序列化为get请求的参数   {'name':'中国'}  name=%E4%B8%AD%E5%9B%BD 
+6. parse_qs()  
+```python
+from urllib.parse import parse_qs,parse_qsl
+print(parse_qs('http://www.baidu.com/index.html;user?id=5&name=100#comment'))
+#{'user?id': ['5'], 'name': ['100#comment']}
+print(parse_qsl('id=5&name=100#comment'))
+# [('id', '5'), ('name', '100#comment')]
+```
+parse_qsl()   
+
+
+7. quote()   将内容转化为url编码   urlencode 内部调用了这个应该
+8. unquote() 
+```python
+from urllib.parse import urlencode,quote,unquote
+c = urlencode({'name':'中国'})
+print(c) # name=%E4%B8%AD%E5%9B%BD
+print(unquote(c)) #name=中国
+print(quote('中国'))  #%E4%B8%AD%E5%9B%BD
+```
+
+
+###robotparser
+```python
+from urllib.robotparser import RobotFileParser
+from urllib.request import urlopen
+
+rp = RobotFileParser()
+url = 'https://www.zhihu.com/robots.txt'
+rp.set_url(url)
+rp.read()
+print(rp.can_fetch('*', url))
+
+
+
+# 第二种用法
+rp = RobotFileParser()
+rp.parse(urlopen('http://www.jianshu.com/robots.txt').read().decode('utf-8').split('\n'))
+
+```
+
+
+
+
+
+
+
+
 
 ### requsets
 
